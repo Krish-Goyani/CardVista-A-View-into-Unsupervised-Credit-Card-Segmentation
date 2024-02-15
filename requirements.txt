@@ -1,0 +1,13 @@
+scikit-learn
+streamlit
+catboost
+notebook
+numpy
+scikit-learn
+python-box==6.0.2
+pyYAML
+ensure==1.0.2
+joblib
+types-PyYAML
+pathlib
+-e .
