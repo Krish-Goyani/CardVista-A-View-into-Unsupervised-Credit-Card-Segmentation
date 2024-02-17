@@ -1,3 +1,4 @@
+# Config file for ML project stages and artifact locations 
 artifacts_root : artifacts
 
 data_ingestion:

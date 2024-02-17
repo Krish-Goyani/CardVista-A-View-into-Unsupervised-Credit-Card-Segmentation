@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 from src.CardVista.constants import *
 
+#customer transformer that replace outliers with bound values 
 class ReplaceOutliers(BaseEstimator, TransformerMixin):
 
     def __init__(self):
@@ -88,6 +89,8 @@ class DataTransformationandClustering:
         logger.info("data transformed in partial pipeline")
 
         scaled_data = partial_pipe.transform(temp)
+        scaled_data = pd.DataFrame(scaled_data)
+        scaled_data.to_csv(os.path.join(self.config.root_dir, "scaled_data.csv"),index = False)
 
         labels = pipe.fit_predict(data)
         

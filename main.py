@@ -2,7 +2,7 @@ from src.CardVista.logging import logger
 
 from src.CardVista.pipeline.stage_01_data_ingestion import DataIngestionTrainingPipeline
 from src.CardVista.pipeline.stage_02_data_validation import DataValidationTrainingPipeline
-from CardVista.pipeline.stage_03_data_transformation_and_clustering import DataTransformationandClusteringPipeline
+from src.CardVista.pipeline.stage_03_data_transformation_and_clustering import DataTransformationandClusteringPipeline
 from src.CardVista.pipeline.stage_04_model_trainer import ModelTrainerTrainingPipeline
 from src.CardVista.pipeline.stage_05_model_evaluation import ModelEvaluationTrainingPipeline
 

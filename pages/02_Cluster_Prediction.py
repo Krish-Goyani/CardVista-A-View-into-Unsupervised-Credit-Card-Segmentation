@@ -1,17 +1,23 @@
 import streamlit as st
 import numpy as np
 from src.CardVista.pipeline.prediction import PredictionPipeline
-import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
-import plotly.figure_factory as ff
-import matplotlib.pyplot as plt
-import seaborn as sns
+from sklearn.decomposition import PCA
+import plotly.express as px
 
-st.markdown('<style>body{background-color: Blue;}</style>',unsafe_allow_html=True)
-st.title("Prediction")
-st.set_option('deprecation.showPyplotGlobalUse', False)
 
+st.set_page_config(
+    page_title="CardVista",
+    page_icon=":credit_card:",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
+
+st.title("Customer's Cluster Predictor")
+st.markdown("Enter the user's details, and our model will predict which cluster the user belongs to.")
+
+# Create a form using Streamlit
 with st.form(key= "CardVista_form", clear_on_submit = True, border = True):
 
   BALANCE = st.number_input("Enter balance", placeholder="Outstanding amount owed", step=None)
@@ -61,23 +67,45 @@ if submitted:
 
     data = np.asarray(data)
 
+    # Create an instance of the PredictionPipeline
     obj = PredictionPipeline()
-
+    # Make a prediction based on user input
     cluster = obj.predict(data)
 
-    st.markdown(f"Data Belongs to Cluster = {cluster[0]}")
+    st.markdown(f"Based on above details, customer belong to Cluster  =  {cluster[0]}")
 
-    df=pd.read_csv('artifacts\data_transformation_and_clustering\data.csv')
+    # Load data for 3D cluster visualization
+    df = pd.read_csv('artifacts\data_transformation_and_clustering\data.csv')
+    scaled_data = pd.read_csv('artifacts\data_transformation_and_clustering\scaled_data.csv')
+
+    # Apply PCA for dimensionality reduction
+    pca_scaled_std = PCA(n_components=3, random_state=42)
+    pca_scaled_data = pca_scaled_std.fit_transform(scaled_data)
+
+    # Create a 3D scatter plot using Plotly Express
+    fig = px.scatter_3d(
+    x=pca_scaled_data[:, 0],
+    y=pca_scaled_data[:, 1],
+    z=pca_scaled_data[:, 2],
+    color_continuous_scale='Viridis',
+    title='3D Cluster Visualization',
+    labels={
+        'x': 'Principal Component 1',
+        'y': 'Principal Component 2',
+        'z': 'Principal Component 3',
+        'color': 'Cluster'
+    },color=df['CLUSTER']
+    )
+    st.plotly_chart(fig)
+
+    # Display statistical description of the selected cluster
+    st.markdown("Statistical description of this particular cluster ")
+
+    df=df[df['CLUSTER']==cluster[0]]
+    statistics = df.apply(lambda x: pd.Series({'mean': x.mean(), 'median': x.median(), 'std': x.std(), 'min': x.min(), '25%': np.quantile(x, q=0.25), '75%': np.quantile(x, q=0.75), 'max': x.max()}))
+    st.dataframe(statistics.transpose())
+
   
-    cluster_df=df[df['CLUSTER']==cluster[0]]
-
-    plt.rcParams["figure.figsize"] = (20,3)
-
-    for c in cluster_df.drop(['CLUSTER'],axis=1):
-        fig, ax = plt.subplots()
-        grid= sns.FacetGrid(cluster_df, col='CLUSTER')
-        grid= grid.map(plt.hist, c)
-        plt.show()
-        st.pyplot()
 
 
+  
