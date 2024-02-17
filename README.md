@@ -1,4 +1,4 @@
-# CardVista: Unlocking Customer Insights with Data
+# CardVista: A View into Unsupervised Credit Card Segmentation
 
 CardVista is a data-driven solution developed for Goyani Bank, a leading financial institution. The project aims to provide personalized services and targeted marketing campaigns to the bank's diverse customer base by leveraging customer segmentation and predictive modeling techniques.
 
